@@ -620,6 +620,11 @@ final class SyncDecisionContext implements WorkflowInterceptor {
     return context.getVersion(changeID, converter, minSupported, maxSupported);
   }
 
+  @Override
+  public int getVersion(String changeID, int minSupported, int maxSupported, GetVersionOptions options) {
+    return context.getVersion(changeID, converter, minSupported, maxSupported, options);
+  }
+
   void fireTimers() {
     timers.fireTimers(context.currentTimeMillis());
   }

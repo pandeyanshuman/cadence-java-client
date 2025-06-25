@@ -194,6 +194,18 @@ public interface DecisionContext extends ReplayAware {
    */
   int getVersion(String changeID, DataConverter dataConverter, int minSupported, int maxSupported);
 
+  /**
+   * Enhanced version of getVersion with additional options for version control.
+   *
+   * @param changeID identifier of a particular change
+   * @param dataConverter data converter for serialization
+   * @param minSupported min version supported for the change
+   * @param maxSupported max version supported for the change
+   * @param options version control options
+   * @return version
+   */
+  int getVersion(String changeID, DataConverter dataConverter, int minSupported, int maxSupported, GetVersionOptions options);
+
   Random newRandom();
 
   /** @return scope to be used for metrics reporting. */
