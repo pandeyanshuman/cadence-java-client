@@ -20,16 +20,17 @@ package com.uber.cadence.workflow;
 import java.util.Optional;
 
 /**
- * Options for configuring GetVersion behavior.
- * This class provides a builder pattern for configuring version control options.
- * 
+ * Options for configuring GetVersion behavior. This class provides a builder pattern for
+ * configuring version control options.
+ *
  * <p>Example usage:
+ *
  * <pre><code>
  * // Force a specific version
  * GetVersionOptions options = GetVersionOptions.newBuilder()
  *     .executeWithVersion(2)
  *     .build();
- * 
+ *
  * // Use minimum supported version
  * GetVersionOptions options = GetVersionOptions.newBuilder()
  *     .executeWithMinVersion()
@@ -37,72 +38,64 @@ import java.util.Optional;
  * </code></pre>
  */
 public final class GetVersionOptions {
-    private final Optional<Integer> customVersion;
-    private final boolean useMinVersion;
+  private final Optional<Integer> customVersion;
+  private final boolean useMinVersion;
 
-    private GetVersionOptions(Optional<Integer> customVersion, boolean useMinVersion) {
-        this.customVersion = customVersion;
-        this.useMinVersion = useMinVersion;
+  private GetVersionOptions(Optional<Integer> customVersion, boolean useMinVersion) {
+    this.customVersion = customVersion;
+    this.useMinVersion = useMinVersion;
+  }
+
+  /** Returns the custom version if specified, otherwise empty. */
+  public Optional<Integer> getCustomVersion() {
+    return customVersion;
+  }
+
+  /** Returns true if the minimum version should be used instead of maximum version. */
+  public boolean isUseMinVersion() {
+    return useMinVersion;
+  }
+
+  /** Creates a new builder for GetVersionOptions. */
+  public static Builder newBuilder() {
+    return new Builder();
+  }
+
+  /** Builder for GetVersionOptions. */
+  public static class Builder {
+    private Optional<Integer> customVersion = Optional.empty();
+    private boolean useMinVersion = false;
+
+    /**
+     * Forces a specific version to be returned when executed for the first time, instead of
+     * returning maxSupported version.
+     *
+     * @param version the specific version to use
+     * @return this builder
+     */
+    public Builder executeWithVersion(int version) {
+      this.customVersion = Optional.of(version);
+      return this;
     }
 
     /**
-     * Returns the custom version if specified, otherwise empty.
+     * Makes GetVersion return minSupported version when executed for the first time, instead of
+     * returning maxSupported version.
+     *
+     * @return this builder
      */
-    public Optional<Integer> getCustomVersion() {
-        return customVersion;
+    public Builder executeWithMinVersion() {
+      this.useMinVersion = true;
+      return this;
     }
 
     /**
-     * Returns true if the minimum version should be used instead of maximum version.
+     * Builds the GetVersionOptions instance.
+     *
+     * @return the configured GetVersionOptions
      */
-    public boolean isUseMinVersion() {
-        return useMinVersion;
+    public GetVersionOptions build() {
+      return new GetVersionOptions(customVersion, useMinVersion);
     }
-
-    /**
-     * Creates a new builder for GetVersionOptions.
-     */
-    public static Builder newBuilder() {
-        return new Builder();
-    }
-
-    /**
-     * Builder for GetVersionOptions.
-     */
-    public static class Builder {
-        private Optional<Integer> customVersion = Optional.empty();
-        private boolean useMinVersion = false;
-
-        /**
-         * Forces a specific version to be returned when executed for the first time,
-         * instead of returning maxSupported version.
-         * 
-         * @param version the specific version to use
-         * @return this builder
-         */
-        public Builder executeWithVersion(int version) {
-            this.customVersion = Optional.of(version);
-            return this;
-        }
-
-        /**
-         * Makes GetVersion return minSupported version when executed for the first time,
-         * instead of returning maxSupported version.
-         * 
-         * @return this builder
-         */
-        public Builder executeWithMinVersion() {
-            this.useMinVersion = true;
-            return this;
-        }
-
-        /**
-         * Builds the GetVersionOptions instance.
-         * 
-         * @return the configured GetVersionOptions
-         */
-        public GetVersionOptions build() {
-            return new GetVersionOptions(customVersion, useMinVersion);
-        }
-    }
-} 
+  }
+}

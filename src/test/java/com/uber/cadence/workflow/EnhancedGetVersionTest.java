@@ -19,8 +19,12 @@ package com.uber.cadence.workflow;
 
 import static org.junit.Assert.*;
 
+import com.uber.cadence.client.WorkflowClient;
+import com.uber.cadence.client.WorkflowOptions;
 import com.uber.cadence.testing.TestWorkflowEnvironment;
 import com.uber.cadence.worker.Worker;
+import java.time.Duration;
+import java.util.concurrent.ExecutionException;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -42,46 +46,82 @@ public class EnhancedGetVersionTest {
   }
 
   @Test
-  public void testGetVersionWithCustomVersion() {
-    worker.registerWorkflowImplementationTypes(TestWorkflowWithCustomVersion.class);
+  public void testGetVersionWithCustomVersion() throws ExecutionException, InterruptedException {
+    worker.registerWorkflowImplementationTypes(TestWorkflowWithCustomVersionImpl.class);
     testEnvironment.start();
 
-    TestWorkflowWithCustomVersion workflow = testEnvironment.newWorkflowStub(TestWorkflowWithCustomVersion.class);
+    WorkflowClient client = testEnvironment.newWorkflowClient();
+
+    WorkflowOptions options =
+        new WorkflowOptions.Builder()
+            .setExecutionStartToCloseTimeout(Duration.ofMinutes(5))
+            .setTaskList("test-task-list")
+            .build();
+
+    TestWorkflowWithCustomVersion workflow =
+        client.newWorkflowStub(TestWorkflowWithCustomVersion.class, options);
     String result = workflow.execute("test-input");
-    
+
     assertEquals("custom-version-result", result);
   }
 
   @Test
-  public void testGetVersionWithMinVersion() {
-    worker.registerWorkflowImplementationTypes(TestWorkflowWithMinVersion.class);
+  public void testGetVersionWithMinVersion() throws ExecutionException, InterruptedException {
+    worker.registerWorkflowImplementationTypes(TestWorkflowWithMinVersionImpl.class);
     testEnvironment.start();
 
-    TestWorkflowWithMinVersion workflow = testEnvironment.newWorkflowStub(TestWorkflowWithMinVersion.class);
+    WorkflowClient client = testEnvironment.newWorkflowClient();
+
+    WorkflowOptions options =
+        new WorkflowOptions.Builder()
+            .setExecutionStartToCloseTimeout(Duration.ofMinutes(5))
+            .setTaskList("test-task-list")
+            .build();
+
+    TestWorkflowWithMinVersion workflow =
+        client.newWorkflowStub(TestWorkflowWithMinVersion.class, options);
     String result = workflow.execute("test-input");
-    
+
     assertEquals("min-version-result", result);
   }
 
   @Test
-  public void testGetVersionWithOptions() {
-    worker.registerWorkflowImplementationTypes(TestWorkflowWithOptions.class);
+  public void testGetVersionWithOptions() throws ExecutionException, InterruptedException {
+    worker.registerWorkflowImplementationTypes(TestWorkflowWithOptionsImpl.class);
     testEnvironment.start();
 
-    TestWorkflowWithOptions workflow = testEnvironment.newWorkflowStub(TestWorkflowWithOptions.class);
+    WorkflowClient client = testEnvironment.newWorkflowClient();
+
+    WorkflowOptions options =
+        new WorkflowOptions.Builder()
+            .setExecutionStartToCloseTimeout(Duration.ofMinutes(5))
+            .setTaskList("test-task-list")
+            .build();
+
+    TestWorkflowWithOptions workflow =
+        client.newWorkflowStub(TestWorkflowWithOptions.class, options);
     String result = workflow.execute("test-input");
-    
+
     assertEquals("options-result", result);
   }
 
   @Test
-  public void testConvenienceMethods() {
-    worker.registerWorkflowImplementationTypes(TestWorkflowWithConvenienceMethods.class);
+  public void testConvenienceMethods() throws ExecutionException, InterruptedException {
+    worker.registerWorkflowImplementationTypes(TestWorkflowWithConvenienceMethodsImpl.class);
     testEnvironment.start();
 
-    TestWorkflowWithConvenienceMethods workflow = testEnvironment.newWorkflowStub(TestWorkflowWithConvenienceMethods.class);
+    WorkflowClient client = testEnvironment.newWorkflowClient();
+
+    WorkflowOptions options =
+        new WorkflowOptions.Builder()
+            .setExecutionStartToCloseTimeout(Duration.ofMinutes(5))
+            .setTaskList("test-task-list")
+            .build();
+
+    TestWorkflowWithConvenienceMethods workflow =
+        client.newWorkflowStub(TestWorkflowWithConvenienceMethods.class, options);
     String result = workflow.execute("test-input");
-    
+
     assertEquals("convenience-result", result);
   }
 
@@ -93,9 +133,10 @@ public class EnhancedGetVersionTest {
   public static class TestWorkflowWithCustomVersionImpl implements TestWorkflowWithCustomVersion {
     @Override
     public String execute(String input) {
-      int version = Workflow.getVersion("test-change", 1, 3, 
-          GetVersionOptions.newBuilder().executeWithVersion(2).build());
-      
+      int version =
+          Workflow.getVersion(
+              "test-change", 1, 3, GetVersionOptions.newBuilder().executeWithVersion(2).build());
+
       if (version == 2) {
         return "custom-version-result";
       } else {
@@ -112,9 +153,10 @@ public class EnhancedGetVersionTest {
   public static class TestWorkflowWithMinVersionImpl implements TestWorkflowWithMinVersion {
     @Override
     public String execute(String input) {
-      int version = Workflow.getVersion("test-change", 1, 3, 
-          GetVersionOptions.newBuilder().executeWithMinVersion().build());
-      
+      int version =
+          Workflow.getVersion(
+              "test-change", 1, 3, GetVersionOptions.newBuilder().executeWithMinVersion().build());
+
       if (version == 1) {
         return "min-version-result";
       } else {
@@ -131,12 +173,10 @@ public class EnhancedGetVersionTest {
   public static class TestWorkflowWithOptionsImpl implements TestWorkflowWithOptions {
     @Override
     public String execute(String input) {
-      GetVersionOptions options = GetVersionOptions.newBuilder()
-          .executeWithVersion(2)
-          .build();
-      
+      GetVersionOptions options = GetVersionOptions.newBuilder().executeWithVersion(2).build();
+
       int version = Workflow.getVersion("test-change", 1, 3, options);
-      
+
       if (version == 2) {
         return "options-result";
       } else {
@@ -150,12 +190,13 @@ public class EnhancedGetVersionTest {
     String execute(String input);
   }
 
-  public static class TestWorkflowWithConvenienceMethodsImpl implements TestWorkflowWithConvenienceMethods {
+  public static class TestWorkflowWithConvenienceMethodsImpl
+      implements TestWorkflowWithConvenienceMethods {
     @Override
     public String execute(String input) {
       int version1 = Workflow.getVersionWithCustomVersion("test-change-1", 1, 3, 2);
       int version2 = Workflow.getVersionWithMinVersion("test-change-2", 1, 3);
-      
+
       if (version1 == 2 && version2 == 1) {
         return "convenience-result";
       } else {
@@ -163,4 +204,4 @@ public class EnhancedGetVersionTest {
       }
     }
   }
-} 
+}

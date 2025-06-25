@@ -129,7 +129,7 @@ public interface WorkflowInterceptor {
 
   /**
    * Enhanced version of getVersion with additional options for version control.
-   * 
+   *
    * @param changeID identifier of a particular change
    * @param minSupported min version supported for the change
    * @param maxSupported max version supported for the change

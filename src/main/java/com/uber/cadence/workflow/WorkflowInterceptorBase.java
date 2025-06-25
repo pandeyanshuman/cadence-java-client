@@ -135,7 +135,8 @@ public class WorkflowInterceptorBase implements WorkflowInterceptor {
   }
 
   @Override
-  public int getVersion(String changeID, int minSupported, int maxSupported, GetVersionOptions options) {
+  public int getVersion(
+      String changeID, int minSupported, int maxSupported, GetVersionOptions options) {
     return next.getVersion(changeID, minSupported, maxSupported, options);
   }
 

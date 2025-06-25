@@ -33,6 +33,7 @@ import com.uber.cadence.internal.worker.LocalActivityWorker;
 import com.uber.cadence.workflow.ActivityFailureException;
 import com.uber.cadence.workflow.Functions.Func;
 import com.uber.cadence.workflow.Functions.Func1;
+import com.uber.cadence.workflow.GetVersionOptions;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -320,11 +321,16 @@ public final class ClockDecisionContext {
 
   GetVersionResult getVersion(
       String changeId, DataConverter converter, int minSupported, int maxSupported) {
-    return getVersion(changeId, converter, minSupported, maxSupported, GetVersionOptions.newBuilder().build());
+    return getVersion(
+        changeId, converter, minSupported, maxSupported, GetVersionOptions.newBuilder().build());
   }
 
   GetVersionResult getVersion(
-      String changeId, DataConverter converter, int minSupported, int maxSupported, GetVersionOptions options) {
+      String changeId,
+      DataConverter converter,
+      int minSupported,
+      int maxSupported,
+      GetVersionOptions options) {
     Predicate<MarkerRecordedEventAttributes> changeIdEquals =
         (attributes) -> {
           MarkerHandler.MarkerInterface markerData =
@@ -373,15 +379,15 @@ public final class ClockDecisionContext {
     if (isReplaying()) {
       return WorkflowInternal.DEFAULT_VERSION;
     }
-    
+
     if (options.getCustomVersion().isPresent()) {
       return options.getCustomVersion().get();
     }
-    
+
     if (options.isUseMinVersion()) {
       return minSupported;
     }
-    
+
     return maxSupported;
   }
 

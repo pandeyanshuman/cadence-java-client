@@ -26,73 +26,61 @@ public class GetVersionOptionsTest {
 
   @Test
   public void testExecuteWithVersion() {
-    GetVersionOptions options = GetVersionOptions.newBuilder()
-        .executeWithVersion(5)
-        .build();
-    
+    GetVersionOptions options = GetVersionOptions.newBuilder().executeWithVersion(5).build();
+
     assertEquals(Optional.of(5), options.getCustomVersion());
     assertFalse(options.isUseMinVersion());
   }
-  
+
   @Test
   public void testExecuteWithMinVersion() {
-    GetVersionOptions options = GetVersionOptions.newBuilder()
-        .executeWithMinVersion()
-        .build();
-    
+    GetVersionOptions options = GetVersionOptions.newBuilder().executeWithMinVersion().build();
+
     assertEquals(Optional.empty(), options.getCustomVersion());
     assertTrue(options.isUseMinVersion());
   }
-  
+
   @Test
   public void testDefaultOptions() {
     GetVersionOptions options = GetVersionOptions.newBuilder().build();
-    
+
     assertEquals(Optional.empty(), options.getCustomVersion());
     assertFalse(options.isUseMinVersion());
   }
-  
+
   @Test
   public void testBuilderChaining() {
-    GetVersionOptions options = GetVersionOptions.newBuilder()
-        .executeWithVersion(3)
-        .executeWithMinVersion()
-        .build();
-    
+    GetVersionOptions options =
+        GetVersionOptions.newBuilder().executeWithVersion(3).executeWithMinVersion().build();
+
     // When both are set, custom version takes precedence
     assertEquals(Optional.of(3), options.getCustomVersion());
     assertTrue(options.isUseMinVersion());
   }
-  
+
   @Test
   public void testMultipleExecuteWithVersionCalls() {
-    GetVersionOptions options = GetVersionOptions.newBuilder()
-        .executeWithVersion(1)
-        .executeWithVersion(2)
-        .build();
-    
+    GetVersionOptions options =
+        GetVersionOptions.newBuilder().executeWithVersion(1).executeWithVersion(2).build();
+
     // Last call should take precedence
     assertEquals(Optional.of(2), options.getCustomVersion());
     assertFalse(options.isUseMinVersion());
   }
-  
+
   @Test
   public void testZeroVersion() {
-    GetVersionOptions options = GetVersionOptions.newBuilder()
-        .executeWithVersion(0)
-        .build();
-    
+    GetVersionOptions options = GetVersionOptions.newBuilder().executeWithVersion(0).build();
+
     assertEquals(Optional.of(0), options.getCustomVersion());
     assertFalse(options.isUseMinVersion());
   }
-  
+
   @Test
   public void testNegativeVersion() {
-    GetVersionOptions options = GetVersionOptions.newBuilder()
-        .executeWithVersion(-1)
-        .build();
-    
+    GetVersionOptions options = GetVersionOptions.newBuilder().executeWithVersion(-1).build();
+
     assertEquals(Optional.of(-1), options.getCustomVersion());
     assertFalse(options.isUseMinVersion());
   }
-} 
+}

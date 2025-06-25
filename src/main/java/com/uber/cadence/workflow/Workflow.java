@@ -1145,16 +1145,18 @@ public final class Workflow {
   }
 
   /**
-   * Enhanced version of {@code getVersion} with additional options for version control.
-   * This method provides more granular control over version execution and enables safer deployment strategies.
+   * Enhanced version of {@code getVersion} with additional options for version control. This method
+   * provides more granular control over version execution and enables safer deployment strategies.
    *
    * <p>Example usage with custom version:
+   *
    * <pre><code>
-   * int version = Workflow.getVersion("changeId", 1, 3, 
+   * int version = Workflow.getVersion("changeId", 1, 3,
    *     GetVersionOptions.newBuilder().executeWithVersion(2).build());
    * </code></pre>
    *
    * <p>Example usage with minimum version:
+   *
    * <pre><code>
    * int version = Workflow.getVersion("changeId", 1, 3,
    *     GetVersionOptions.newBuilder().executeWithMinVersion().build());
@@ -1166,12 +1168,14 @@ public final class Workflow {
    * @param options version control options
    * @return version
    */
-  public static int getVersion(String changeID, int minSupported, int maxSupported, GetVersionOptions options) {
+  public static int getVersion(
+      String changeID, int minSupported, int maxSupported, GetVersionOptions options) {
     return WorkflowInternal.getVersion(changeID, minSupported, maxSupported, options);
   }
 
   /**
-   * Convenience method that forces a specific version to be returned when executed for the first time.
+   * Convenience method that forces a specific version to be returned when executed for the first
+   * time.
    *
    * @param changeID identifier of a particular change
    * @param minSupported min version supported for the change
@@ -1179,15 +1183,16 @@ public final class Workflow {
    * @param customVersion the specific version to use
    * @return version
    */
-  public static int getVersionWithCustomVersion(String changeID, int minSupported, int maxSupported, int customVersion) {
-    GetVersionOptions options = GetVersionOptions.newBuilder()
-        .executeWithVersion(customVersion)
-        .build();
+  public static int getVersionWithCustomVersion(
+      String changeID, int minSupported, int maxSupported, int customVersion) {
+    GetVersionOptions options =
+        GetVersionOptions.newBuilder().executeWithVersion(customVersion).build();
     return getVersion(changeID, minSupported, maxSupported, options);
   }
 
   /**
-   * Convenience method that makes GetVersion return minSupported version when executed for the first time.
+   * Convenience method that makes GetVersion return minSupported version when executed for the
+   * first time.
    *
    * @param changeID identifier of a particular change
    * @param minSupported min version supported for the change
@@ -1195,9 +1200,7 @@ public final class Workflow {
    * @return version
    */
   public static int getVersionWithMinVersion(String changeID, int minSupported, int maxSupported) {
-    GetVersionOptions options = GetVersionOptions.newBuilder()
-        .executeWithMinVersion()
-        .build();
+    GetVersionOptions options = GetVersionOptions.newBuilder().executeWithMinVersion().build();
     return getVersion(changeID, minSupported, maxSupported, options);
   }
 
