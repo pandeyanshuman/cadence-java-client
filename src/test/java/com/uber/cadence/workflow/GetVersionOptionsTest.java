@@ -51,6 +51,11 @@ public class GetVersionOptionsTest {
     GetVersionOptions.executeWithVersion(-1);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void testCustomVersionCannotBeNegative() {
+    GetVersionOptions.executeWithVersion(-2);
+  }
+
   @Test
   public void testToString() {
     GetVersionOptions options = GetVersionOptions.executeWithVersion(3);

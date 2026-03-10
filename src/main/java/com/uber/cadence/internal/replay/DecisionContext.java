@@ -195,6 +195,10 @@ public interface DecisionContext extends ReplayAware {
    */
   int getVersion(String changeID, DataConverter dataConverter, int minSupported, int maxSupported);
 
+  /**
+   * @implNote Custom implementations should override this method to pass {@code options} through.
+   *     The default delegates to the 4-arg overload, silently dropping options.
+   */
   default int getVersion(
       String changeID,
       DataConverter dataConverter,

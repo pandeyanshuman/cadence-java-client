@@ -78,12 +78,12 @@ public final class GetVersionOptions {
     /**
      * Sets a specific version to use when recording a new version marker.
      *
-     * @param version the version to use; must not be DEFAULT_VERSION (-1)
-     * @throws IllegalArgumentException if version is DEFAULT_VERSION (-1)
+     * @param version the version to use; must be non-negative
+     * @throws IllegalArgumentException if version is negative
      */
     public Builder setCustomVersion(int version) {
-      if (version == -1) {
-        throw new IllegalArgumentException("customVersion cannot be DEFAULT_VERSION (-1)");
+      if (version < 0) {
+        throw new IllegalArgumentException("customVersion must be non-negative, got: " + version);
       }
       this.customVersion = version;
       return this;
