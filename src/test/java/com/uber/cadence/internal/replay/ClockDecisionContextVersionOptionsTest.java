@@ -152,4 +152,17 @@ public class ClockDecisionContextVersionOptionsTest {
         context.getVersion("change2", converter, 1, 3, optionsMax);
     assertEquals(3, resultMax.getVersion());
   }
+
+  @Test
+  public void testOutOfRangeCustomVersionIgnoredWhenCached() {
+    // First call records version 3 (default, maxSupported)
+    context.getVersion("change1", converter, 1, 3, null);
+
+    // Second call with customVersion=5 which is outside [1,3].
+    // Should NOT throw because a cached version (3) exists and options are ignored.
+    GetVersionOptions options = GetVersionOptions.executeWithVersion(5);
+    ClockDecisionContext.GetVersionResult result =
+        context.getVersion("change1", converter, 1, 3, options);
+    assertEquals(3, result.getVersion());
+  }
 }

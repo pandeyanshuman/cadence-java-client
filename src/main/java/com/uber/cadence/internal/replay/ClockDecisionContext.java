@@ -331,14 +331,6 @@ public final class ClockDecisionContext {
       int maxSupported,
       GetVersionOptions options) {
 
-    if (options != null && options.getCustomVersion() != null) {
-      int cv = options.getCustomVersion();
-      if (cv < minSupported || cv > maxSupported) {
-        throw new IllegalArgumentException(
-            "customVersion " + cv + " is not within [" + minSupported + ", " + maxSupported + "]");
-      }
-    }
-
     Predicate<MarkerRecordedEventAttributes> changeIdEquals =
         (attributes) -> {
           MarkerHandler.MarkerInterface markerData =
@@ -358,7 +350,18 @@ public final class ClockDecisionContext {
               // Select version based on options priority
               int versionToRecord;
               if (options != null && options.getCustomVersion() != null) {
-                versionToRecord = options.getCustomVersion(); // priority #2
+                int cv = options.getCustomVersion();
+                if (cv < minSupported || cv > maxSupported) {
+                  throw new IllegalArgumentException(
+                      "customVersion "
+                          + cv
+                          + " is not within ["
+                          + minSupported
+                          + ", "
+                          + maxSupported
+                          + "]");
+                }
+                versionToRecord = cv; // priority #2
               } else if (options != null && options.isUseMinVersion()) {
                 versionToRecord = minSupported; // priority #3
               } else {
